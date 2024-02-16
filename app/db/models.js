@@ -17,9 +17,9 @@ const postSchema = new mongoose.Schema(
     caption: String,
     image: String,
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId, 
       ref: "User",
-      default: new mongoose.Types.ObjectId("65cde4cb0d09cb615a23db17")
+      default: new mongoose.Types.ObjectId("65cde4cb0d09cb615a23db17") 
     },
     likes: Number,
     tags: [String]
