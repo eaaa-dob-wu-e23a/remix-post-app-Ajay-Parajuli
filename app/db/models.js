@@ -55,8 +55,9 @@ export async function initData() {
   // check if data exists
   const userCount = await mongoose.models.User.countDocuments();
   const postCount = await mongoose.models.Post.countDocuments();
+  const commentCount = await mongoose.models.Comment.countDocuments();
 
-  if (userCount === 0 || postCount === 0) {
+  if (userCount === 0 || postCount === 0 || commentCount === 0)  {
     await insertData();
   }
 }
@@ -199,5 +200,17 @@ async function insertData() {
       tags: ["city", "Aarhus", "streets"]
     }
   ]);
+
+  const annePost = await Post.findOne({ user: anne._id });
+
+// Create Rasmus's comment
+const rasmusComment = new Comment({
+  text: "This is Rasmus's comment on Anne's post.",
+  user: rasmus._id,
+  post: annePost._id // Reference to Anne's post
+});
+
+// Save the comment
+await rasmusComment.save();
 
 }
