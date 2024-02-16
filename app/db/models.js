@@ -22,14 +22,31 @@ const postSchema = new mongoose.Schema(
       default: new mongoose.Types.ObjectId("65cde4cb0d09cb615a23db17") 
     },
     likes: Number,
-    tags: [String]
+    tags: [String],
   },
   { timestamps: true }
 );
 
+const commentSchema = new mongoose.Schema(
+  {
+    text: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    post: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    }
+  },
+  { timestamps: true }
+);
+
+
 export const models = [
   { name: "User", schema: userSchema, collection: "users" },
-  { name: "Post", schema: postSchema, collection: "posts" }
+  { name: "Post", schema: postSchema, collection: "posts" },
+  { name: "Comment", schema: commentSchema, collection: "comments" }
 ];
 
 // ========== initData ========== //
@@ -49,10 +66,12 @@ export async function initData() {
 async function insertData() {
   const User = mongoose.models.User;
   const Post = mongoose.models.Post;
+  const Comment = mongoose.models.Comment;
 
   console.log("Dropping collections...");
   await User.collection.drop();
   await Post.collection.drop();
+  await Comment.collection.drop();
 
   console.log("Inserting data...");
   // Insert users
@@ -98,7 +117,11 @@ async function insertData() {
     name: "Dan Okkels Brendstrup",
     title: "Lecturer",
     educations: ["Web Development"]
+
   });
+
+  
+
 
   // Insert posts
   await Post.insertMany([
@@ -108,7 +131,8 @@ async function insertData() {
         "https://images.unsplash.com/photo-1566241832378-917a0f30db2c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
       likes: 101,
       user: maria._id,
-      tags: ["beach", "sunset", "nature", "Aarhus"]
+      tags: ["beach", "sunset", "nature", "Aarhus"],
+      
     },
     {
       caption: "Exploring the city streets of Aarhus",
@@ -175,4 +199,5 @@ async function insertData() {
       tags: ["city", "Aarhus", "streets"]
     }
   ]);
+
 }
