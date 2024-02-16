@@ -7,25 +7,20 @@ const userSchema = new mongoose.Schema(
     mail: String,
     name: String,
     title: String,
-    educations: [String]
+    educations: [String],
+    posts: [
+      {
+        capton: String,
+        image: String,
+        likes: Number,
+        tags: [String]
+      }
+    ]
   },
   { timestamps: true }
 );
 
-const postSchema = new mongoose.Schema(
-  {
-    caption: String,
-    image: String,
-    user: {
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User",
-      default: new mongoose.Types.ObjectId("65cde4cb0d09cb615a23db17") 
-    },
-    likes: Number,
-    tags: [String]
-  },
-  { timestamps: true }
-);
+
 
 export const models = [
   { name: "User", schema: userSchema, collection: "users" },
