@@ -1,7 +1,5 @@
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-
-import UserAvatar from "../components/UserAvatar";
 import mongoose from "mongoose";
 
 export const meta = () => {
@@ -21,9 +19,12 @@ export default function User() {
       <h1>Users</h1>
       <section className="grid">
         {users.map(user => (
-          <Link key={user._id} className="post-link" to={`${user._id}`}>
-           <UserAvatar user={user} />
-          </Link>
+         <div className="user-card">
+            <img src={user.image}></img>
+            <h3>{user.name}</h3>
+            <p>{user.mail}</p>
+            <p>{user.title}</p>
+         </div>
         ))}
       </section>
     </div>
