@@ -1,6 +1,5 @@
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import PostCard from "../components/PostCard";
 import mongoose from "mongoose";
 
 export const meta = () => {
@@ -8,21 +7,28 @@ export const meta = () => {
 };
 
 export async function loader() {
-  const posts = await mongoose.models.Post.find().sort({ createdAt: -1 }).populate("user").exec();
+  const posts = await mongoose.models.User.find().sort({ createdAt: -1 }) // populate the posts 
 
   return json({ posts });
 }
 
 export default function Index() {
   const { posts } = useLoaderData();
+  console.log(posts);
   return (
     <div className="page">
       <h1>Posts</h1>
       <section className="grid">
-        {posts.map(post => (
-          <Link key={post._id} className="post-link" to={`${post._id}`}>
-            <PostCard post={post} />
-          </Link>
+        {posts.map((post, index) => (
+          <div key={index} className="post-card">
+            {post.posts.map((postItem, postIndex) => (
+              <div key={postIndex}>
+                <img src={postItem.image} />
+                <p>{postItem.likes}</p>
+                <p>{postItem.caption}</p>
+              </div>
+            ))}
+          </div>
         ))}
       </section>
     </div>
