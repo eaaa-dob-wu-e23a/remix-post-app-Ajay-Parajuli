@@ -10,12 +10,12 @@ export const meta = () => {
 
 export async function loader({ request }) {
   // Get the search query from the URL
-  const { searchParams } = new URL(request.url); 
+  const { searchParams } = new URL(request.url);  // this extracts the url
   const q = searchParams.get("q");
 
   try {
     let posts = [];
-    if (q) {
+    if (q) { // 
       // Perform a case-insensitive search on the "caption" field
       posts = await mongoose.models.Post.find({ caption: { $regex: new RegExp(q, "i") }});
     } else {
@@ -40,7 +40,7 @@ export default function Index() {
   
   useEffect(() => {
     const searchField = document.getElementById("q");
-    if (searchField instanceof HTMLInputElement) {
+    if (searchField instanceof HTMLInputElement) { 
       searchField.value = q || "";
     }
   }, [q]);
@@ -49,11 +49,9 @@ export default function Index() {
   return (
     <div className="page">
       <h1>Posts</h1>
-      <Form id="search-form" onChange={(event) => {
-                const isFirstSearch = q === null;
-                submit(event.currentTarget, {
-                  replace: !isFirstSearch,
-                });
+      <Form id="search-form" onChange={(event) => 
+      {submit(event.currentTarget
+                );
               }}
               role="search">
               <input
