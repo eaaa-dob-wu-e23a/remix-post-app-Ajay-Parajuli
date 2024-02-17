@@ -9,55 +9,70 @@ export const meta = () => {
 };
 
 export async function loader({ request }) {
-  // Get the search query from the URL
-  const { searchParams } = new URL(request.url);  // this extracts the url
+  const { searchParams } = new URL(request.url);
   const q = searchParams.get("q");
-  const likesRange = searchParams.get("likesRange");
+  const likesRange = searchParams.get("likesRange"); // this adds the likesRange to the searchParams
+  const tags = searchParams.get("tags");
 
   try {
-    let posts = [];
+    let filterCriteria = {};
+
     if (q) {
-      // Perform a case-insensitive search on the "caption" field
-      posts = await mongoose.models.Post.find({ caption: { $regex: new RegExp(q, "i") }});
-    } else if (likesRange === "50") {
-      posts = await mongoose.models.Post.find({ likes: { $lt: 50 } });
-    } else if (likesRange === "50-100") {
-      posts = await mongoose.models.Post.find({ likes: { $gte: 50, $lt: 100 } });
-    } else if (likesRange === "100-150") {
-      posts = await mongoose.models.Post.find({ likes: { $gte: 100, $lt: 150 } });
-    } else if (likesRange === null || likesRange === "") {
-      posts = await mongoose.models.Post.find();
-    }
-    else {
-      posts = await mongoose.models.Post.find();
+      filterCriteria.caption = { $regex: new RegExp(q, "i") };
     }
 
-    return json({ posts, q, likesRange });
+    if (likesRange) {
+      if (likesRange === "50") {
+        filterCriteria.likes = { $lt: 50 };
+      } else if (likesRange === "50-100") {
+        filterCriteria.likes = { $gte: 50, $lt: 100 };
+      } else if (likesRange === "100-150") {
+        filterCriteria.likes = { $gte: 100, $lt: 150 };
+      } else if (likesRange === "150-200") {
+        filterCriteria.likes = { $gte: 150, $lt: 200};
+      } else if (likesRange === "200") {
+        filterCriteria.likes = { $gte: 200};
+      }
+    }
+
+    if (tags) {
+      filterCriteria.tags = { $regex: new RegExp(tags, "i") };
+    }
+
+    const posts = await mongoose.models.Post.find(filterCriteria);
+
+
+    return json({ posts, q, likesRange, tags });
   } catch (error) {
     console.error(error);
     throw new Response("Internal Server Error", { status: 500 });
   }
-};
+}
+
+
 
 export default function Index() {
-  const { posts, q, likesRange } = useLoaderData();
+  const { posts, q, likesRange, tags } = useLoaderData();
   const submit = useSubmit();
 
-  console.log(likesRange) // State for likesRange
-
   useEffect(() => {
-    const searchField = document.getElementById("q");
-    if (searchField instanceof HTMLInputElement) { 
-      searchField.value = q || "";
-    }
-  }, [q]);
+    const searchFieldQ = document.getElementById("q");
+    const searchFieldLikes = document.querySelector(".filter");
+    const searchFieldTags = document.querySelector(".filtertags");
 
-  useEffect(() => {
-    const searchField = document.getElementById("likesRange");
-    if (searchField instanceof HTMLInputElement) { 
-      searchField.value = likesRange || "";
+    if (searchFieldQ instanceof HTMLInputElement) { 
+        searchFieldQ.value = q || "";
     }
-  }, [likesRange]);
+
+    if (searchFieldLikes instanceof HTMLInputElement) { 
+        searchFieldLikes.value = likesRange || "";
+    }
+
+    if (searchFieldTags instanceof HTMLInputElement) { 
+        searchFieldTags.value = tags || "";
+    }
+}, [q, likesRange, tags]);
+
 
   return (
     <div className="page">
@@ -80,21 +95,27 @@ export default function Index() {
       </Form>
 
       <Form
-        id="likes-filter-form"
-        onChange={(event) => {
-          submit(event.currentTarget);
-        }}
-      >
-        <select
-          name="likesRange"
-          id="likesRange"
-        >
-          <option value="">All Likes</option>
-          <option value="50">less than 50</option>
-          <option value="50-100">50-100</option>
-          <option value="100-150">100-150</option>
-        </select>
-      </Form>
+  id="filter-form"
+  onChange={(event) => {
+    submit(event.currentTarget);
+  }}
+>
+  <select name="likesRange" className="filter">
+    <option value="">All Likes</option>
+    <option value="50">less than 50</option>
+    <option value="50-100">50-100</option>
+    <option value="100-150">100-150</option>
+    <option value="150-200">150-200</option>
+    <option value="200">more than 200</option>
+  </select>
+    <div className="tag-flex"> 
+        <button name="tags" className="filtertags" value="Aarhus">Aarhus</button>
+        <button name="tags" className="filtertags" value="Food">Food</button>
+
+        </div>
+
+
+</Form>
 
       <section className="grid">
         {/* Display filtered posts */}
