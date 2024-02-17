@@ -75,9 +75,13 @@ export default function Index() {
 
 
   return (
-    <div className="page">
-      <h1>Posts</h1>
-      <Form
+    <>
+    <div >
+    </div>
+    <div className="page ">
+    <h1>Posts</h1>
+    <div className="flex-dem">
+    <Form
         id="search-form"
         onChange={(event) => {
           submit(event.currentTarget);
@@ -88,7 +92,7 @@ export default function Index() {
           id="q"
           aria-label="Search contacts"
           defaultValue={q || ""}
-          placeholder="Search"
+          placeholder="Search caption..."
           type="search"
           name="q"
         />
@@ -100,6 +104,7 @@ export default function Index() {
     submit(event.currentTarget);
   }}
 >
+  <label htmlFor="likesRange">Filter by Likes:</label>
   <select name="likesRange" className="filter">
     <option value="">All Likes</option>
     <option value="50">less than 50</option>
@@ -108,14 +113,16 @@ export default function Index() {
     <option value="150-200">150-200</option>
     <option value="200">more than 200</option>
   </select>
-    <div className="tag-flex"> 
+        <label htmlFor="tags">Filter by Tags:</label>
         <button name="tags" className="filtertags" value="Aarhus">Aarhus</button>
         <button name="tags" className="filtertags" value="Food">Food</button>
 
-        </div>
+      
 
 
 </Form>
+    </div>
+      
 
       <section className="grid">
         {/* Display filtered posts */}
@@ -126,5 +133,6 @@ export default function Index() {
         ))}
       </section>
     </div>
+    </>
   );
 }
