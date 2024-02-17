@@ -6,6 +6,8 @@ export default function PostCard({ post }) {
       <UserAvatar user={post.user} />
       <img src={post.image} alt={post.caption} />
       <h3>{post.caption}</h3>
+      <p>Likes: {post.likes}</p>
+     
     </article>
   );
 }
