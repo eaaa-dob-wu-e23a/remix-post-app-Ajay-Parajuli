@@ -39,7 +39,7 @@ export async function loader({ request }) {
       filterCriteria.tags = { $regex: new RegExp(tags, "i") };
     }
 
-    const posts = await mongoose.models.Post.find(filterCriteria);
+    const posts = await mongoose.models.Post.find(filterCriteria).populate("user").sort({ createdAt: -1 });
 
 
     return json({ posts, q, likesRange, tags });
@@ -122,8 +122,6 @@ export default function Index() {
 
 </Form>
     </div>
-      
-
       <section className="grid">
         {/* Display filtered posts */}
         {posts.map(post => (
