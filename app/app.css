@@ -169,7 +169,7 @@ nav {
   text-align: center;
   top: 0;
   padding: 1em 2em;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1em;
 }
 
@@ -305,4 +305,51 @@ nav a.active {
 
 #post-page .btns {
   padding: 1em 0;
+}
+
+#sign-in-page,
+#sign-up-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 85vh;
+}
+
+.error-message {
+  color: var(--text-color-danger);
+  margin-top: 10px;
+  grid-column: 2;
+}
+
+#sign-in-page form{
+  width: 50rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.25);
+  padding: 1.5em;
+  background-color: var(--light-grey);
+  transition: 0.5s;
+  animation: fadeIn 0.5s;
+  border-radius: 8px;
+}
+
+.profile{
+ margin-top: 100px;
+}
+
+.profile img{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+.flex-prof{
+display: flex;
+width: 300px;
+justify-content: space-between;
+margin-top: 20px;
 }

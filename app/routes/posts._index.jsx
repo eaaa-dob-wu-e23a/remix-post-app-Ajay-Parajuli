@@ -39,7 +39,7 @@ export async function loader({ request }) {
       filterCriteria.tags = { $regex: new RegExp(tags, "i") };
     }
 
-    const posts = await mongoose.models.Post.find(filterCriteria);
+    const posts = await mongoose.models.Post.find(filterCriteria)
 
 
     return json({ posts, q, likesRange, tags });
