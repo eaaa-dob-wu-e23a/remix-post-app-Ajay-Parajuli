@@ -13,35 +13,7 @@ export async function loader({ request }) {
   return { user };
 }
 
-export async function action({ request }) {
-    const formData = await request.formData();
-    const newData = Object.fromEntries(formData);
-  
-    try {
-      const user = await authenticator.isAuthenticated(request, {
-        failureRedirect: "/signin"
-      });
-  
-      // Update user profile
-      await mongoose.models.User.findOneAndUpdate(
-        { _id: user._id },
-        {
-          $set: {
-            name: newData.name,
-            title: newData.title,
-            image: newData.image,
-            educations: newData.educations,
-          }
-        }
-      );
-  
-      // Redirect the user to the updated profile page
-      return redirect(`/profile`);
-    } catch (error) {
-      // Handle authentication error
-      return redirect("/signin");
-    }
-  }
+
   
 
 export default function UpdateProfile() {
@@ -130,4 +102,35 @@ export default function UpdateProfile() {
       </div>
     </div>
   );
+}
+
+
+export async function action({ request }) {
+  const formData = await request.formData();
+  const newData = Object.fromEntries(formData);
+
+  try {
+    const user = await authenticator.isAuthenticated(request, {
+      failureRedirect: "/signin"
+    });
+
+    // Update user profile
+    await mongoose.models.User.findOneAndUpdate(
+      { _id: user._id },
+      {
+        $set: {
+          name: newData.name,
+          title: newData.title,
+          image: newData.image,
+          educations: newData.educations,
+        }
+      }
+    );
+
+    // Redirect the user to the updated profile page
+    return redirect(`/profile`);
+  } catch (error) {
+    // Handle authentication error
+    return redirect("/signin");
+  }
 }

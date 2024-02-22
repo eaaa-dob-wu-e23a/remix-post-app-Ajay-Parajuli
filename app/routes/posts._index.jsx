@@ -2,13 +2,20 @@ import { json } from "@remix-run/node";
 import { Link, useLoaderData, Form, useSubmit, useNavigation } from "@remix-run/react";
 import PostCard from "../components/PostCard";
 import mongoose from "mongoose";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import {authenticator} from "../services/auth.server";
+
 
 export const meta = () => {
   return [{ title: "Remix Post App" }];
 };
 
 export async function loader({ request }) {
+
+  await authenticator.isAuthenticated(request, {
+    failureRedirect: "/signin",
+  });
+
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q");
   const likesRange = searchParams.get("likesRange"); // this adds the likesRange to the searchParams
@@ -16,7 +23,6 @@ export async function loader({ request }) {
 
   try {
     let filterCriteria = {};
-
     if (q) {
       filterCriteria.caption = { $regex: new RegExp(q, "i") };
     }
@@ -116,14 +122,13 @@ export default function Index() {
         <label htmlFor="tags">Filter by Tags:</label>
         <button name="tags" className="filtertags" value="Aarhus">Aarhus</button>
         <button name="tags" className="filtertags" value="Food">Food</button>
-
-      
-
+        
+        <label htmlFor="tags">Filter post by user:</label>
+ 
 
 </Form>
     </div>
       <section className="grid">
-        {/* Display filtered posts */}
         {posts.map(post => (
           <Link key={post._id} className="post-link" to={`${post._id}`}>
             <PostCard post={post} />
